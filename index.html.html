@@ -1,0 +1,226 @@
+ financial_planner_pro.html
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Financial Planner PRO</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: linear-gradient(to right, #4facfe, #00f2fe);
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  background: white;
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+
+h2 {
+  color: #333;
+}
+
+input {
+  width: 90%;
+  padding: 12px;
+  margin: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+button {
+  padding: 12px 20px;
+  margin: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #4facfe;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #007bff;
+}
+
+.result {
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.history {
+  margin-top: 20px;
+  text-align: left;
+  font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>💰 Financial Planner PRO</h2>
+
+  <input type="number" id="income" placeholder="Monthly Income">
+  <input type="number" id="expenses" placeholder="Monthly Expenses">
+  <input type="number" id="goal" placeholder="Savings Goal">
+
+  <button onclick="calculate()">Calculate</button>
+  <button onclick="clearData()">Clear Data</button>
+
+  <div class="result" id="result"></div>
+
+  <div class="history">
+    <h3>📜 History</h3>
+    <ul id="historyList"></ul>
+  </div>
+</div>
+
+<script>
+function calculate() {
+  let income = Number(document.getElementById("income").value);
+  let expenses = Number(document.getElementById("expenses").value);
+  let goal = Number(document.getElementById("goal").value);
+
+  let savings = income - expenses;
+  let resultText = "";
+
+  if (savings <= 0) {
+    resultText = "⚠️ Overspending!";
+  } else {
+    let months = (goal / savings).toFixed(1);
+    resultText = `💡 Savings: ₹${savings} <br> 🎯 Goal in ${months} months`;
+  }
+
+  document.getElementById("result").innerHTML = resultText;
+
+  saveHistory(income, expenses, goal, savings);
+}
+
+function saveHistory(income, expenses, goal, savings) {
+  let history = JSON.parse(localStorage.getItem("financeHistory")) || [];
+
+  history.push({
+    income,
+    expenses,
+    goal,
+    savings
+  });
+
+  localStorage.setItem("financeHistory", JSON.stringify(history));
+  displayHistory();
+}
+
+function displayHistory() {
+  let history = JSON.parse(localStorage.getItem("financeHistory")) || [];
+  let list = document.getElementById("historyList");
+  list.innerHTML = "";
+
+  history.forEach(item => {
+    let li = document.createElement("li");
+    li.textContent = `Income: ₹${item.income}, Expense: ₹${item.expenses}, Savings: ₹${item.savings}`;
+    list.appendChild(li);
+  });
+}
+
+function clearData() {
+  localStorage.clear();
+  displayHistory();
+}
+
+window.onload = displayHistory;
+</script>
+
+</body>
+</html>
+<script>
+function formatRupee(amount) {
+  return "₹" + amount.toLocaleString("en-IN");
+}
+
+function calculate() {
+  let income = Number(document.getElementById("income").value);
+  let expenses = Number(document.getElementById("expenses").value);
+  let goal = Number(document.getElementById("goal").value);
+
+  let savings = income - expenses;
+  let resultText = "";
+
+  if (savings <= 0) {
+    resultText = "⚠️ Overspending!";
+  } else {
+    let months = (goal / savings).toFixed(1);
+    resultText = `💡 Savings: ${formatRupee(savings)} 
+                  <br> 🎯 Goal in ${months} months`;
+  }
+
+  document.getElementById("result").innerHTML = resultText;
+
+  saveHistory(income, expenses, goal, savings);
+}
+
+function saveHistory(income, expenses, goal, savings) {
+  let history = JSON.parse(localStorage.getItem("financeHistory")) || [];
+
+  history.push({
+    income,
+    expenses,
+    goal,
+    savings
+  });
+
+  localStorage.setItem("financeHistory", JSON.stringify(history));
+  displayHistory();
+}
+
+function displayHistory() {
+  let history = JSON.parse(localStorage.getItem("financeHistory")) || [];
+  let list = document.getElementById("historyList");
+  list.innerHTML = "";
+
+  history.forEach(item => {
+    let li = document.createElement("li");
+    li.innerHTML = `Income: ${formatRupee(item.income)}, 
+                    Expense: ${formatRupee(item.expenses)}, 
+                    Savings: ${formatRupee(item.savings)}`;
+    list.appendChild(li);
+  });
+}
+
+function clearData() {
+  localStorage.clear();
+  displayHistory();
+}
+
+window.onload = displayHistory;
+</script>
+<h3>📈 SIP Calculator</h3>
+
+<input type="number" id="sipAmount" placeholder="Monthly Investment (₹)">
+<input type="number" id="sipRate" placeholder="Annual Interest Rate (%)">
+<input type="number" id="sipTime" placeholder="Time (Years)">
+
+<button onclick="calculateSIP()">Calculate SIP</button>
+
+<div id="sipResult" class="result"></div>
+<script>function calculateSIP() {
+  let P = Number(document.getElementById("sipAmount").value);
+  let annualRate = Number(document.getElementById("sipRate").value);
+  let years = Number(document.getElementById("sipTime").value);
+
+  let r = annualRate / 12 / 100; // monthly rate
+  let n = years * 12;
+
+  let futureValue = P * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
+
+  document.getElementById("sipResult").innerHTML =
+    `💰 Invested Amount: ₹${(P * n).toLocaleString("en-IN")} <br>
+     📈 Future Value: ₹${futureValue.toFixed(0).toLocaleString("en-IN")}`;
+}</script>
+<head><script src="https://cdn.jsdelivr.net/npm/chart.js"></script></head>
